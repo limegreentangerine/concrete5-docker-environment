@@ -2,6 +2,10 @@
 
 **under development, not for use in production**
 
+A base environment for running Concrete5.
+
+Added toys such as importing of a default sql file and some cheeky environment variables.
+
 ---
 
 ### Credit
