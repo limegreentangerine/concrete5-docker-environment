@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:5.7.32
+    container_name: mysql
+    restart: always
+    volumes:
+      - "./dbdata:/docker-entrypoint-initdb.d"
+      - "./data/db:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: concrete5
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+    command: [
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci'
+    ]
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - "8060:80"
+    environment:
+      - PMA_ARBITRARY=1
+
+  concrete:
+    container_name: concrete
+    build: "images/php7"
+    restart: always
+    volumes:
+      - "./www:/var/www"
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - "8070:80"
+    environment:
+      MYSQL_DATABASE: concrete5
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+      DEBUG_DISPLAY: 'true'
+      DEBUG_DETAIL: 'debug'
